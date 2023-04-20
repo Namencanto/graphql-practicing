@@ -31,8 +31,8 @@ const ProjectMutations = {
       resolve(parent, args) {
         const project = new Project({
           name: args.name,
-          description: args.email,
-          status: args.phone,
+          description: args.description,
+          status: args.status,
           clientId: args.clientId,
         });
 
@@ -47,6 +47,13 @@ const ProjectMutations = {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
+        Project.find(
+          { clientID: args.id }.then((projects) => {
+            projects.forEach((project) => {
+              project.remove();
+            });
+          })
+        );
         return Project.findByIdAndRemove(args.id);
       },
     },
